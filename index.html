@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#185FA5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="HP Install">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heat Pump Install Reference &mdash; NZ</title>
+<style>
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f3; color: #1a1a18; min-height: 100vh; }
+  #app { max-width: 680px; margin: 0 auto; background: #fff; min-height: 100vh; }
+
+  /* Header */
+  #main-header { background: #f0ede6; border-bottom: 0.5px solid rgba(0,0,0,0.12); padding: 16px 18px; display: flex; align-items: center; gap: 12px; }
+  #main-header .icon { font-size: 24px; }
+  .h-title { font-size: 16px; font-weight: 500; }
+  .h-sub { font-size: 12px; color: #5f5e5a; margin-top: 1px; }
+
+  /* Brand tabs */
+  #brand-tabs { display: flex; border-bottom: 0.5px solid rgba(0,0,0,0.12); background: #f0ede6; overflow-x: auto; }
+  .brand-tab { padding: 10px 16px; font-size: 13px; font-weight: 500; color: #5f5e5a; border: none; background: none; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .brand-tab:hover { color: #1a1a18; }
+  .brand-tab.active { color: #185FA5; border-bottom-color: #185FA5; }
+
+  /* Series tabs */
+  #series-tabs { display: flex; border-bottom: 0.5px solid rgba(0,0,0,0.12); padding: 0 16px; gap: 4px; overflow-x: auto; background: #fff; }
+  .series-tab { padding: 8px 12px; font-size: 12px; color: #5f5e5a; border: none; background: none; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
+  .series-tab:hover { color: #1a1a18; }
+  .series-tab.active { color: #185FA5; border-bottom-color: #185FA5; font-weight: 500; }
+
+  /* Model selector */
+  #model-wrap { padding: 14px 16px; border-bottom: 0.5px solid rgba(0,0,0,0.12); }
+  #model-wrap label { font-size: 12px; color: #5f5e5a; display: block; margin-bottom: 4px; }
+  #model-sel { width: 100%; font-size: 14px; font-family: inherit; padding: 9px 10px; border-radius: 8px; border: 0.5px solid rgba(0,0,0,0.25); background: #fff; color: #1a1a18; }
+
+  /* Result */
+  #result { padding: 16px; }
+  .no-sel { text-align: center; padding: 3rem 1rem; color: #888780; font-size: 14px; }
+
+  .series-badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #E6F1FB; color: #0C447C; margin-bottom: 8px; font-weight: 500; }
+  .model-note { font-size: 12px; color: #5f5e5a; margin-bottom: 14px; }
+  .section-title { font-size: 11px; font-weight: 500; color: #888780; text-transform: uppercase; letter-spacing: 0.05em; margin: 14px 0 8px; }
+
+  .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .spec-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .spec-card { background: #f0ede6; border-radius: 8px; padding: 12px 14px; }
+  .spec-label { font-size: 11px; color: #888780; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .spec-value { font-size: 20px; font-weight: 500; }
+  .spec-value-sm { font-size: 14px; font-weight: 500; }
+  .spec-unit { font-size: 12px; font-weight: 400; color: #888780; margin-left: 2px; }
+
+  .info-row { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; background: #f0ede6; border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
+  .info-icon { color: #888780; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .info-label { color: #888780; font-size: 11px; display: block; margin-bottom: 1px; }
+
+  .warn { border-radius: 8px; padding: 10px 12px; font-size: 12px; display: flex; gap: 8px; align-items: flex-start; margin-top: 8px; line-height: 1.5; }
+  .warn-amber { background: #FAEEDA; border: 0.5px solid #BA7517; color: #633806; }
+  .warn-blue { background: #E6F1FB; border: 0.5px solid #185FA5; color: #0C447C; }
+  .warn-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  @media (max-width: 420px) {
+    .spec-grid-3 { grid-template-columns: 1fr 1fr; }
+    .spec-grid-3 .spec-card:last-child { grid-column: span 2; }
+  }
+
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="main-header">
+    <div class="icon">&#10052;</div>
+    <div>
+      <div class="h-title">Heat Pump Install Reference &mdash; NZ</div>
+      <div class="h-sub">Daikin &middot; Toshiba &middot; Carrier &middot; Mitsubishi Electric</div>
+    </div>
+  </div>
+
+  <div id="brand-tabs">
+    <button class="brand-tab active" onclick="selectBrand('daikin')">Daikin</button>
+    <button class="brand-tab" onclick="selectBrand('toshiba')">Toshiba</button>
+    <button class="brand-tab" onclick="selectBrand('carrier')">Carrier</button>
+    <button class="brand-tab" onclick="selectBrand('mitsubishi')">Mitsubishi Electric</button>
+    <button class="brand-tab" onclick="selectBrand('myair')">My Air</button>
+  </div>
+
+  <div id="series-tabs"></div>
+
+  <div id="model-wrap">
+    <label for="model-sel">Model</label>
+    <select id="model-sel" onchange="onModel()">
+      <option value="">Select model&hellip;</option>
+    </select>
+  </div>
+
+  <div id="result"><div class="no-sel">&#9757; Select a brand, series and model above</div></div>
+</div>
+
+<script>
+const DATA = {
+  daikin: {
+    series: {
+      ftxm: {
+        label: "FTXM — Cora (high wall)", type: "High wall",
+        models: [
+          {id:"ftxm20",name:"FTXM20UVMZ — 2.0kW cool / 2.7kW heat",cool:2.0,heat:2.8,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"FTXM20UVMZ / RXM20UVMZ",indoorDims:"285 × 770 × 226mm",outdoorDims:"550 × 675 × 284mm"},
+          {id:"ftxm25",name:"FTXM25UVMZ — 2.5kW cool / 3.3kW heat",cool:2.5,heat:3.3,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"FTXM25UVMZ / RXM25UVMZ",indoorDims:"285 × 770 × 226mm",outdoorDims:"550 × 675 × 284mm"},
+          {id:"ftxm35",name:"FTXM35UVMZ — 3.5kW cool / 4.0kW heat",cool:3.5,heat:4.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"FTXM35UVMZ / RXM35UVMZ",indoorDims:"285 × 770 × 226mm",outdoorDims:"550 × 675 × 284mm"},
+          {id:"ftxm46",name:"FTXM46UVMZ — 4.6kW cool / 5.4kW heat",cool:4.6,heat:5.4,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:10,maxPipe:30,chargeRate:20,ref:"FTXM46UVMZ / RXM46UVMZ",indoorDims:"285 × 770 × 226mm",outdoorDims:"550 × 675 × 284mm"},
+          {id:"ftxm50",name:"FTXM50UVMZ — 5.0kW cool / 6.1kW heat",cool:5.0,heat:6.1,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:10,maxPipe:30,chargeRate:20,ref:"FTXM50UVMZ / RXM50UVMZ",indoorDims:"295 × 990 × 266mm",outdoorDims:"695 × 930 × 350mm"},
+          {id:"ftxm60",name:"FTXM60UVMZ — 6.0kW cool / 7.3kW heat",cool:6.0,heat:7.3,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:10,maxPipe:30,chargeRate:25,ref:"FTXM60UVMZ / RXM60UVMZ",indoorDims:"295 × 990 × 266mm",outdoorDims:"695 × 930 × 350mm"},
+          {id:"ftxm71",name:"FTXM71UVMZ — 7.1kW cool / 8.1kW heat",cool:7.1,heat:8.1,breaker:20,cable:"4.0mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:10,maxPipe:30,chargeRate:25,ref:"FTXM71UVMZ / RXM71UVMZ",indoorDims:"295 × 990 × 266mm",outdoorDims:"695 × 930 × 350mm"},
+        ]
+      },
+      ftxv: {
+        label: "FTXV — Standard (high wall)", type: "High wall",
+        models: [
+          {id:"ftxv20",name:"FTXV20UVMA — 2.0kW cool / 2.7kW heat",cool:2.0,heat:2.7,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"FTXV20UVMA / RXV20UVMA",indoorDims:"285 × 770 × 223mm",outdoorDims:"550 × 675 × 284mm"},
+          {id:"ftxv25",name:"FTXV25UVMA — 2.5kW cool / 3.2kW heat",cool:2.5,heat:3.2,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"FTXV25UVMA / RXV25UVMA",indoorDims:"285 × 770 × 223mm",outdoorDims:"550 × 675 × 284mm"},
+          {id:"ftxv35",name:"FTXV35UVMA — 3.5kW cool / 3.7kW heat",cool:3.5,heat:3.7,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"FTXV35UVMA / RXV35UVMA",indoorDims:"285 × 770 × 223mm",outdoorDims:"550 × 675 × 284mm"},
+          {id:"ftxv46",name:"FTXV46UVMA — 4.6kW cool / 4.7kW heat",cool:4.6,heat:4.7,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:10,maxPipe:30,chargeRate:20,ref:"FTXV46UVMA / RXV46UVMA",indoorDims:"285 × 700 × 223mm",outdoorDims:"695 × 930 × 350mm"},
+          {id:"ftxv50",name:"FTXV50UVMA — 5.0kW cool / 6.0kW heat",cool:5.0,heat:6.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:10,maxPipe:30,chargeRate:20,ref:"FTXV50UVMA / RXV50UVMA",indoorDims:"295 × 990 × 263mm",outdoorDims:"695 × 930 × 350mm"},
+          {id:"ftxv60",name:"FTXV60UVMA — 6.0kW cool / 7.2kW heat",cool:6.0,heat:7.2,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:10,maxPipe:30,chargeRate:25,ref:"FTXV60UVMA / RXV60UVMA",indoorDims:"295 × 990 × 263mm",outdoorDims:"695 × 930 × 350mm"},
+          {id:"ftxv71",name:"FTXV71UVMA — 7.1kW cool / 8.0kW heat",cool:7.1,heat:8.0,breaker:20,cable:"4.0mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:10,maxPipe:30,chargeRate:25,ref:"FTXV71UVMA / RXV71UVMA",indoorDims:"295 × 990 × 263mm",outdoorDims:"695 × 930 × 350mm"},
+          {id:"ftxv85",name:"FTXV80WVMA — 8.0kW cool / 9.0kW heat",cool:8.0,heat:9.0,breaker:20,cable:"4.0mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:10,maxPipe:30,chargeRate:30,ref:"FTXV80WVMA / RXV80WVMA",indoorDims:"329 × 1240 × 278mm",outdoorDims:"990 × 940 × 320mm"},
+          {id:"ftxv95",name:"FTXV90WVMA — 9.0kW cool / 10.3kW heat",cool:9.0,heat:10.3,breaker:20,cable:"4.0mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:10,maxPipe:30,chargeRate:30,ref:"FTXV90WVMA / RXV90WVMA",indoorDims:"329 × 1240 × 278mm",outdoorDims:"990 × 940 × 320mm"},
+        ]
+      },
+      ftxf: {
+        label: "FTXF — Lite (high wall)", type: "High wall",
+        models: [
+          {id:"ftxf20",name:"FTXF20WVMA — 2.0kW cool / 2.7kW heat",cool:2.0,heat:2.7,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"FTXF20WVMA / RXF20WVMA",indoorDims:"285 × 798 × 238mm",outdoorDims:"550 × 765 × 285mm"},
+          {id:"ftxf25",name:"FTXF25WVMA — 2.5kW cool / 3.0kW heat",cool:2.5,heat:3.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"FTXF25WVMA / RXF25WVMA",indoorDims:"285 × 770 × 223mm",outdoorDims:"550 × 675 × 284mm"},
+          {id:"ftxf35",name:"FTXF35WVMA — 3.5kW cool / 3.7kW heat",cool:3.5,heat:3.7,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"FTXF35WVMA / RXF35WVMA",indoorDims:"285 × 770 × 223mm",outdoorDims:"550 × 675 × 284mm"},
+          {id:"ftxf46",name:"FTXF46WVMA — 4.6kW cool / 5.4kW heat",cool:4.6,heat:5.4,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:10,maxPipe:25,chargeRate:20,ref:"FTXF46WVMA / RXF46WVMA",indoorDims:"285 × 798 × 238mm",outdoorDims:"550 × 765 × 285mm"},
+          {id:"ftxf50",name:"FTXF50WVMA — 5.0kW cool / 5.2kW heat",cool:5.0,heat:5.2,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:10,maxPipe:30,chargeRate:20,ref:"FTXF50WVMA / RXF50WVMA",indoorDims:"295 × 990 × 263mm",outdoorDims:"595 × 845 × 300mm"},
+          {id:"ftxf60",name:"FTXF60WVMA — 6.0kW cool / 6.5kW heat",cool:6.0,heat:6.5,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'1/2"',preCharged:10,maxPipe:30,chargeRate:25,ref:"FTXF60WVMA / RXF60WVMA",indoorDims:"295 × 990 × 263mm",outdoorDims:"595 × 845 × 300mm"},
+          {id:"ftxf71",name:"FTXF71WVMA — 7.1kW cool / 8.0kW heat",cool:7.1,heat:8.0,breaker:20,cable:"4.0mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'1/2"',preCharged:10,maxPipe:30,chargeRate:25,ref:"FTXF71WVMA / RXF71WVMA",indoorDims:"295 × 990 × 263mm",outdoorDims:"695 × 930 × 350mm"},
+        ]
+      },
+      fvxm: {
+        label: "FVXM — Aura (floor standing)", type: "Floor standing",
+        models: [
+          {id:"fvxm25",name:"FVXM25YVMA — 2.5kW cool / 3.5kW heat",cool:2.5,heat:3.5,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"FVXM25YVMA / RXM25YFVMA",indoorDims:"600 × 750 × 238mm",outdoorDims:"595 × 845 × 300mm"},
+          {id:"fvxm35",name:"FVXM35YVMA — 3.5kW cool / 4.5kW heat",cool:3.5,heat:4.5,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"FVXM35YVMA / RXM35YFVMA",indoorDims:"600 × 750 × 238mm",outdoorDims:"595 × 845 × 300mm"},
+          {id:"fvxm45",name:"FVXM45YVMA — 4.5kW cool / 5.4kW heat",cool:4.5,heat:5.4,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:10,maxPipe:20,chargeRate:20,ref:"FVXM45YVMA / RXM45YFVMA",indoorDims:"600 × 750 × 238mm",outdoorDims:"595 × 845 × 300mm"},
+          {id:"fvxm50",name:"FVXM50YVMA — 5.0kW cool / 6.0kW heat",cool:5.0,heat:6.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:10,maxPipe:30,chargeRate:20,ref:"FVXM50YVMA / RXM50YFVMA",indoorDims:"600 × 750 × 238mm",outdoorDims:"595 × 845 × 300mm"},
+          {id:"fvxm60",name:"FVXM60YVMA — 6.0kW cool / 7.0kW heat",cool:6.0,heat:7.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:10,maxPipe:30,chargeRate:25,ref:"FVXM60YVMA / RXM60YFVMA",indoorDims:"600 × 750 × 238mm",outdoorDims:"695 × 930 × 350mm"},
+          {id:"fvxm71",name:"FVXM71YVMA — 6.7kW cool / 8.0kW heat",cool:6.7,heat:8.0,breaker:20,cable:"4.0mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:10,maxPipe:30,chargeRate:25,ref:"FVXM71YVMA / RXM71YFVMA",indoorDims:"600 × 750 × 238mm",outdoorDims:"695 × 930 × 350mm"},
+        ]
+      },
+      fdya: {
+        label: "FDYA — Premium Inverter Ducted", type: "Ceiling ducted",
+        models: [
+          {id:"fdya71",name:"FDYA71AV1 — 7.1kW cool / 7.5kW heat",cool:7.1,heat:7.5,breaker:20,cable:"4.0mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:30,maxPipe:75,chargeRate:25,ref:"FDYA71AV1 / RZAS71CV1",indoorDims:"300 × 1210 × 900mm",outdoorDims:"990 × 940 × 320mm"},
+          {id:"fdya85",name:"FDYA85AV1 — 8.5kW cool / 10.0kW heat",cool:8.5,heat:10.0,breaker:32,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'3/8"',suction:'5/8"',preCharged:30,maxPipe:75,chargeRate:25,ref:"FDYA85AV1 / RZAS85CV1",indoorDims:"300 × 1210 × 900mm",outdoorDims:"990 × 940 × 320mm"},
+          {id:"fdya100",name:"FDYA100AV1 — 10.0kW cool / 12.5kW heat",cool:10.0,heat:12.5,breaker:32,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'3/8"',suction:'5/8"',preCharged:40,maxPipe:75,chargeRate:30,ref:"FDYA100AV1 / RZAS100CV1",indoorDims:"300 × 1210 × 900mm",outdoorDims:"1430 × 940 × 320mm"},
+          {id:"fdya125",name:"FDYA125AV1 — 12.5kW cool / 15.0kW heat",cool:12.5,heat:15.0,breaker:32,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'3/8"',suction:'5/8"',preCharged:40,maxPipe:75,chargeRate:30,ref:"FDYA125AV1 / RZAS125CV1",indoorDims:"360 × 1520 × 935mm",outdoorDims:"1430 × 940 × 320mm"},
+          {id:"fdya140",name:"FDYA140AV1 — 14.0kW cool / 16.5kW heat",cool:14.0,heat:16.5,breaker:32,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'3/8"',suction:'5/8"',preCharged:40,maxPipe:75,chargeRate:30,ref:"FDYA140AV1 / RZAS140CV1",indoorDims:"360 × 1520 × 935mm",outdoorDims:"1430 × 940 × 320mm"},
+          {id:"fdya160",name:"FDYA160AV1 — 16.0kW cool / 18.0kW heat",cool:16.0,heat:18.0,breaker:32,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'3/8"',suction:'5/8"',preCharged:40,maxPipe:75,chargeRate:30,ref:"FDYA160AV1 / RZAS160CV1",indoorDims:"400 × 1505 × 980mm",outdoorDims:"1430 × 940 × 320mm"},
+        ]
+      },
+      fdyan: {
+        label: "FDYAN — Inverter Ducted", type: "Ceiling ducted",
+        models: [
+          {id:"fdyan50",name:"FDYAN50AV1 — 5.0kW cool / 6.0kW heat",cool:5.0,heat:6.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:20,maxPipe:50,chargeRate:20,ref:"FDYAN50AV1 / RZAS50CV1",indoorDims:"300 × 900 × 700mm",outdoorDims:"550 × 765 × 285mm"},
+          {id:"fdyan60",name:"FDYAN60AV1 — 6.0kW cool / 7.0kW heat",cool:6.0,heat:7.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:20,maxPipe:50,chargeRate:20,ref:"FDYAN60AV1 / RZAS60CV1",indoorDims:"300 × 900 × 700mm",outdoorDims:"735 × 825 × 300mm"},
+          {id:"fdyan71",name:"FDYAN71AV1 — 7.1kW cool / 7.5kW heat",cool:7.1,heat:7.5,breaker:32,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'3/8"',suction:'5/8"',preCharged:25,maxPipe:50,chargeRate:25,ref:"FDYAN71AV1 / RZAS71CV1",indoorDims:"300 × 1210 × 900mm",outdoorDims:"770 × 900 × 320mm"},
+          {id:"fdyan85",name:"FDYAN85AV1 — 8.5kW cool / 10.0kW heat",cool:8.5,heat:10.0,breaker:32,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'3/8"',suction:'5/8"',preCharged:25,maxPipe:50,chargeRate:25,ref:"FDYAN85AV1 / RZAS85CV1",indoorDims:"300 × 1210 × 900mm",outdoorDims:"770 × 900 × 320mm"},
+          {id:"fdyan100",name:"FDYAN100AV1 — 10.0kW cool / 12.5kW heat",cool:10.0,heat:12.5,breaker:32,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'3/8"',suction:'5/8"',preCharged:30,maxPipe:50,chargeRate:30,ref:"FDYAN100AV1 / RZAS100CV1",indoorDims:"300 × 1210 × 900mm",outdoorDims:"770 × 900 × 320mm"},
+          {id:"fdyan125",name:"FDYAN125AV1 — 12.5kW cool / 15.0kW heat",cool:12.5,heat:15.0,breaker:32,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'3/8"',suction:'5/8"',preCharged:30,maxPipe:50,chargeRate:30,ref:"FDYAN125AV1 / RZAS125CV1",indoorDims:"300 × 1520 × 935mm",outdoorDims:"920 × 1040 × 370mm"},
+          {id:"fdyan140",name:"FDYAN140AV1 — 14.0kW cool / 16.5kW heat",cool:14.0,heat:16.5,breaker:32,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'3/8"',suction:'5/8"',preCharged:30,maxPipe:50,chargeRate:30,ref:"FDYAN140AV1 / RZAS140CV1",indoorDims:"300 × 1520 × 935mm",outdoorDims:"920 × 1040 × 370mm"},
+          {id:"fdyan160",name:"FDYAN160AV1 — 16.0kW cool / 18.0kW heat",cool:16.0,heat:18.0,breaker:32,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'3/8"',suction:'5/8"',preCharged:30,maxPipe:50,chargeRate:30,ref:"FDYAN160AV1 / RZAS160CV1",indoorDims:"360 × 1520 × 935mm",outdoorDims:"920 × 1040 × 370mm"},
+        ]
+      },
+      wifi: {
+        label: "Wi-Fi Adaptors", type: "Accessory",
+        models: [
+          {id:"wifi_ftxm_small",name:"FTXM20 / 25 / 35 / 46 — Wi-Fi adaptor",cool:0,heat:0,breaker:0,cable:"",isolator:"",liquid:"",suction:"",preCharged:0,maxPipe:0,chargeRate:0,ref:"BRP072C42 + BRP067A42",wifi:true,
+           compatible:"FTXM20, FTXM25, FTXM35, FTXM46",
+           notes:"Requires BRP072C42 Wi-Fi adaptor plus BRP067A42 adapter cable. Use with Daikin D-Mobile app (iOS and Android)."},
+          {id:"wifi_ftxm_large",name:"FTXM50 / 60 / 71 — Wi-Fi adaptor",cool:0,heat:0,breaker:0,cable:"",isolator:"",liquid:"",suction:"",preCharged:0,maxPipe:0,chargeRate:0,ref:"BRP072C42 + BRP980B42",wifi:true,
+           compatible:"FTXM50, FTXM60, FTXM71",
+           notes:"Requires BRP072C42 Wi-Fi adaptor plus BRP980B42 adapter cable. Use with Daikin D-Mobile app (iOS and Android)."},
+          {id:"wifi_ftxv_small",name:"FTXV20 / 25 / 35 / 46 — Wi-Fi adaptor",cool:0,heat:0,breaker:0,cable:"",isolator:"",liquid:"",suction:"",preCharged:0,maxPipe:0,chargeRate:0,ref:"BRP072C42 + BRP067A42",wifi:true,
+           compatible:"FTXV20, FTXV25, FTXV35, FTXV46",
+           notes:"Requires BRP072C42 Wi-Fi adaptor plus BRP067A42 adapter cable. Use with Daikin D-Mobile app (iOS and Android)."},
+          {id:"wifi_ftxv_large",name:"FTXV50 / 60 / 71 / 80 / 90 — Wi-Fi adaptor",cool:0,heat:0,breaker:0,cable:"",isolator:"",liquid:"",suction:"",preCharged:0,maxPipe:0,chargeRate:0,ref:"BRP072C42 + BRP980B42",wifi:true,
+           compatible:"FTXV50, FTXV60, FTXV71, FTXV80, FTXV90",
+           notes:"Requires BRP072C42 Wi-Fi adaptor plus BRP980B42 adapter cable. Use with Daikin D-Mobile app (iOS and Android)."},
+          {id:"wifi_ftxf",name:"FTXF series — Wi-Fi adaptor",cool:0,heat:0,breaker:0,cable:"",isolator:"",liquid:"",suction:"",preCharged:0,maxPipe:0,chargeRate:0,ref:"BRP072C42",wifi:true,
+           compatible:"FTXF25, FTXF35, FTXF50, FTXF60, FTXF71",
+           notes:"Requires BRP072C42 Wi-Fi adaptor. Confirm adapter cable required with Daikin rep. Use with Daikin D-Mobile app (iOS and Android)."},
+          {id:"wifi_fdya",name:"FDYA / FDYAN series — Wi-Fi adaptor",cool:0,heat:0,breaker:0,cable:"",isolator:"",liquid:"",suction:"",preCharged:0,maxPipe:0,chargeRate:0,ref:"BRP15B61",wifi:true,
+           compatible:"FDYA and FDYAN series (all models)",
+           notes:"Requires BRP15B61 Wi-Fi adaptor. Use with Daikin Airbase app (iOS and Android). Allows remote control via Wi-Fi or internet."},
+          {id:"wifi_compact_cassette",name:"Compact Cassette FFA-AVM — Wi-Fi adaptor",cool:0,heat:0,breaker:0,cable:"",isolator:"",liquid:"",suction:"",preCharged:0,maxPipe:0,chargeRate:0,ref:"FFA-AVM",wifi:true,
+           compatible:"Daikin Compact Cassette FFA-AVM series",
+           notes:"Wi-Fi is built into the FFA-AVM unit — no separate adaptor required. Use with Daikin app (iOS and Android)."},
+          {id:"wifi_standard_cassette",name:"Standard Cassette — Wi-Fi adaptor",cool:0,heat:0,breaker:0,cable:"",isolator:"",liquid:"",suction:"",preCharged:0,maxPipe:0,chargeRate:0,ref:"BRP072C42-1 + BRP15B61",wifi:true,
+           compatible:"Daikin Standard Cassette series",
+           notes:"Requires BRP072C42-1 Wi-Fi adaptor plus BRP15B61 adapter. Use with Daikin app (iOS and Android)."},
+          {id:"fvxm_wifi",name:"FVXM Aura — Wi-Fi built in",cool:0,heat:0,breaker:0,cable:"",isolator:"",liquid:"",suction:"",preCharged:0,maxPipe:0,chargeRate:0,ref:"FVXM YVMA series",wifi:true,
+           compatible:"FVXM25, FVXM35, FVXM45, FVXM50, FVXM60, FVXM71 (all Aura floor console models)",
+           notes:"Wi-Fi is built into the unit — no adaptor required. Use with Daikin app (iOS and Android)."},
+        ]
+      }
+    }
+  },
+  toshiba: {
+    series: {
+      shorai: {
+        label: "Shorai Edge E2KVSG-A (high wall)", type: "High wall",
+        models: [
+          {id:"t07",name:"RAS-07E2KVSG-A — 2.0kW cool / 2.5kW heat",cool:2.0,heat:2.5,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:7.5,maxPipe:15,chargeRate:15,ref:"RAS-07E2KVSG-A / RAS-07E2AVSG-NZ",indoorDims:"226 × 800 × 293mm",outdoorDims:"530 × 660 × 240mm"},
+          {id:"t10",name:"RAS-10E2KVSG-A — 2.5kW cool / 3.2kW heat",cool:2.5,heat:3.2,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:7.5,maxPipe:20,chargeRate:15,ref:"RAS-10E2KVSG-A / RAS-10E2AVSG-NZ",indoorDims:"226 × 800 × 293mm",outdoorDims:"550 × 780 × 290mm"},
+          {id:"t13",name:"RAS-13E2KVSG-A — 3.5kW cool / 3.7kW heat",cool:3.5,heat:3.7,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:7.5,maxPipe:20,chargeRate:15,ref:"RAS-13E2KVSG-A / RAS-13E2AVSG-NZ",indoorDims:"226 × 800 × 293mm",outdoorDims:"550 × 780 × 290mm"},
+          {id:"t16",name:"RAS-16E2KVSG-A — 4.2kW cool / 5.4kW heat",cool:4.2,heat:5.4,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:7.5,maxPipe:20,chargeRate:20,ref:"RAS-16E2KVSG-A / RAS-16E2AVSG-NZ",indoorDims:"226 × 800 × 293mm",outdoorDims:"550 × 780 × 290mm"},
+          {id:"t18",name:"RAS-18E2KVSG-A — 5.0kW cool / 5.8kW heat",cool:5.0,heat:5.8,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:7.5,maxPipe:20,chargeRate:20,ref:"RAS-18E2KVSG-A / RAS-18E2AVSG-NZ",indoorDims:"245 × 1053 × 320mm",outdoorDims:"550 × 780 × 290mm"},
+          {id:"t22",name:"RAS-22E2KVSG-A — 6.0kW cool / 6.9kW heat",cool:6.0,heat:6.9,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'1/2"',preCharged:7.5,maxPipe:25,chargeRate:25,ref:"RAS-22E2KVSG-A / RAS-22E2AVSG-NZ",indoorDims:"245 × 1053 × 320mm",outdoorDims:"630 × 800 × 300mm"},
+          {id:"t24",name:"RAS-24E2KVSG-A — 7.1kW cool / 8.0kW heat",cool:7.1,heat:8.0,breaker:20,cable:"4.0mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'1/2"',preCharged:7.5,maxPipe:25,chargeRate:25,ref:"RAS-24E2KVSG-A / RAS-24E2AVSG-NZ",indoorDims:"245 × 1053 × 320mm",outdoorDims:"630 × 800 × 300mm"},
+        ]
+      },
+      rav: {
+        label: "RAV — High Static Ducted", type: "Ceiling ducted",
+        models: [
+          {id:"rav56",name:"RAV-GM561DTP-A — 5.0kW cool / 5.3kW heat",cool:5.0,heat:5.3,breaker:20,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:20,maxPipe:30,chargeRate:20,ref:"RAV-GM561DTP-A / RAV-GM561ATP-A",indoorDims:"298 × 1000 × 750mm",outdoorDims:"550 × 780 × 290mm"},
+          {id:"rav80",name:"RAV-GM801DTP-A — 7.1kW cool / 8.0kW heat",cool:7.1,heat:8.0,breaker:20,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:20,maxPipe:50,chargeRate:25,ref:"RAV-GM801DTP-A / RAV-GM801ATP-A",indoorDims:"298 × 1000 × 750mm",outdoorDims:"630 × 800 × 300mm"},
+          {id:"rav110",name:"RAV-GM1101DTP-A — 10.0kW cool / 11.2kW heat",cool:10.0,heat:11.2,breaker:32,cable:"4.0mm² T&E",isolator:"32A DP",liquid:'3/8"',suction:'5/8"',preCharged:30,maxPipe:50,chargeRate:30,ref:"RAV-GM1101DTP-A / RAV-GM1101ATP-A",indoorDims:"298 × 1400 × 750mm",outdoorDims:"890 × 900 × 320mm"},
+          {id:"rav140",name:"RAV-GM1401DTP-A — 12.5kW cool / 14.0kW heat",cool:12.5,heat:14.0,breaker:32,cable:"4.0mm² T&E",isolator:"32A DP",liquid:'3/8"',suction:'5/8"',preCharged:30,maxPipe:50,chargeRate:30,ref:"RAV-GM1401DTP-A / RAV-GM1401ATP-A",indoorDims:"298 × 1400 × 750mm",outdoorDims:"890 × 900 × 320mm"},
+          {id:"rav160a",name:"RAV-GM1601DTP-A — 14.0kW cool / 16.0kW heat",cool:14.0,heat:16.0,breaker:32,cable:"4.0mm² T&E",isolator:"32A DP",liquid:'3/8"',suction:'5/8"',preCharged:30,maxPipe:50,chargeRate:30,ref:"RAV-GM1601DTP-A / RAV-GM1601ATP-A",indoorDims:"298 × 1400 × 750mm",outdoorDims:"890 × 900 × 320mm"},
+          {id:"rav160b",name:"RAV-GM1601DTP-A (alt) — 14.0kW cool / 16.0kW heat",cool:14.0,heat:16.0,breaker:20,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:30,maxPipe:75,chargeRate:30,ref:"RAV-GM1601DTP-A / RAV-GM1601AT8-A",indoorDims:"298 × 1400 × 750mm",outdoorDims:"1340 × 900 × 320mm"},
+          {id:"rav220",name:"RAV-RM2241DTP-E2 — 20.0kW cool / 22.4kW heat",cool:20.0,heat:22.4,breaker:32,cable:"4.0mm² T&E",isolator:"32A DP",liquid:'1/2"',suction:'1 1/8"',preCharged:30,maxPipe:100,chargeRate:35,ref:"RAV-RM2241DTP-E2 / RAV-GM2241AT8-A",indoorDims:"448 × 1400 × 900mm",outdoorDims:"1550 × 1010 × 370mm",threephase:true},
+          {id:"rav280",name:"RAV-RM2801DTP-E2 — 24.0kW cool / 27.0kW heat",cool:24.0,heat:27.0,breaker:40,cable:"6.0mm² T&E",isolator:"40A DP",liquid:'1/2"',suction:'1 1/8"',preCharged:30,maxPipe:100,chargeRate:35,ref:"RAV-RM2801DTP-E2 / RAV-GM2801AT8-A",indoorDims:"448 × 1400 × 900mm",outdoorDims:"1550 × 1010 × 370mm",threephase:true},
+        ]
+      }
+    }
+  },
+  carrier: {
+    series: {
+      qce: {
+        label: "Ambi QCE (high wall)", type: "High wall", overseas: true,
+        models: [
+          {id:"qce25",name:"42QCE025 — 2.5kW cool / 3.2kW heat",cool:2.5,heat:3.2,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:7.5,maxPipe:50,chargeRate:15,ref:"42QCE025 / 38QCE025",indoorDims:"290 × 800 × 205mm",outdoorDims:"550 × 765 × 280mm"},
+          {id:"qce35",name:"42QCE035 — 3.5kW cool / 4.0kW heat",cool:3.5,heat:4.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:7.5,maxPipe:50,chargeRate:15,ref:"42QCE035 / 38QCE035",indoorDims:"290 × 800 × 205mm",outdoorDims:"550 × 765 × 280mm"},
+          {id:"qce42",name:"42QCE042 — 4.2kW cool / 5.0kW heat",cool:4.2,heat:5.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:7.5,maxPipe:50,chargeRate:20,ref:"42QCE042 / 38QCE042",indoorDims:"290 × 800 × 205mm",outdoorDims:"550 × 765 × 280mm"},
+          {id:"qce50",name:"42QCE050 — 5.0kW cool / 6.0kW heat",cool:5.0,heat:6.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:7.5,maxPipe:50,chargeRate:20,ref:"42QCE050 / 38QCE050",indoorDims:"290 × 990 × 230mm",outdoorDims:"735 × 840 × 300mm"},
+          {id:"qce60",name:"42QCE060 — 6.0kW cool / 7.0kW heat",cool:6.0,heat:7.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:7.5,maxPipe:50,chargeRate:25,ref:"42QCE060 / 38QCE060",indoorDims:"290 × 990 × 230mm",outdoorDims:"735 × 840 × 300mm"},
+          {id:"qce70",name:"42QCE070 — 7.1kW cool / 8.0kW heat",cool:7.1,heat:8.0,breaker:20,cable:"4.0mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:7.5,maxPipe:50,chargeRate:25,ref:"42QCE070 / 38QCE070",indoorDims:"290 × 990 × 230mm",outdoorDims:"735 × 840 × 300mm"},
+        ]
+      }
+    }
+  },
+  mitsubishi: {
+    series: {
+      ap: {
+        label: "AP EcoCore (high wall)", type: "High wall",
+        models: [
+          {id:"ap20",name:"MSZ-AP20 — 2.0kW cool / 2.6kW heat",cool:2.0,heat:2.6,breaker:10,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:7.5,maxPipe:20,chargeRate:15,ref:"MSZ-AP20VGD / MUZ-AP20VG",indoorDims:"299 × 798 × 219mm",outdoorDims:"550 × 800 × 285mm"},
+          {id:"ap25",name:"MSZ-AP25 — 2.5kW cool / 3.2kW heat",cool:2.5,heat:3.2,breaker:10,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"MSZ-AP25VG(K)D / MUZ-AP25VG",indoorDims:"299 × 798 × 219mm",outdoorDims:"550 × 800 × 285mm"},
+          {id:"ap35",name:"MSZ-AP35 — 3.5kW cool / 3.7kW heat",cool:3.5,heat:3.7,breaker:10,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"MSZ-AP35VG(K)D / MUZ-AP35VG",indoorDims:"299 × 798 × 219mm",outdoorDims:"550 × 800 × 285mm"},
+          {id:"ap42",name:"MSZ-AP42 — 4.2kW cool / 5.4kW heat",cool:4.2,heat:5.4,breaker:10,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:10,maxPipe:25,chargeRate:20,ref:"MSZ-AP42VG(K)D / MUZ-AP42VG",indoorDims:"325 × 1100 × 257mm",outdoorDims:"714 × 800 × 285mm"},
+          {id:"ap50",name:"MSZ-AP50 — 5.0kW cool / 6.0kW heat",cool:5.0,heat:6.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:15,maxPipe:25,chargeRate:20,ref:"MSZ-AP50VG(K)D / MUZ-AP50VG",indoorDims:"325 × 1100 × 257mm",outdoorDims:"714 × 800 × 285mm"},
+          {id:"ap60",name:"MSZ-AP60 — 6.0kW cool / 6.8kW heat",cool:6.0,heat:6.8,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:15,maxPipe:30,chargeRate:25,ref:"MSZ-AP60VG(K)D / MUZ-AP60VG",indoorDims:"325 × 1100 × 257mm",outdoorDims:"880 × 840 × 330mm"},
+          {id:"ap71",name:"MSZ-AP71 — 7.1kW cool / 8.0kW heat",cool:7.1,heat:8.0,breaker:20,cable:"4.0mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:15,maxPipe:30,chargeRate:25,ref:"MSZ-AP71VG(K)D / MUZ-AP71VG",indoorDims:"325 × 1100 × 257mm",outdoorDims:"880 × 840 × 330mm"},
+          {id:"ap80",name:"MSZ-AP80 — 7.8kW cool / 9.0kW heat",cool:7.8,heat:9.0,breaker:20,cable:"4.0mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:15,maxPipe:30,chargeRate:30,ref:"MSZ-AP80VG(K)D / MUZ-AP80VG",indoorDims:"325 × 1100 × 257mm",outdoorDims:"880 × 840 × 330mm"},
+        ]
+      },
+      ln: {
+        label: "LN Black Diamond (high wall)", type: "High wall",
+        models: [
+          {id:"ln25",name:"MSZ-LN25 — 2.5kW cool / 3.2kW heat",cool:2.5,heat:3.2,breaker:10,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"MSZ-LN25VG2V/B/R / MUZ-LN25VG",indoorDims:"299 × 798 × 219mm",outdoorDims:"550 × 800 × 285mm"},
+          {id:"ln35",name:"MSZ-LN35 — 3.5kW cool / 4.0kW heat",cool:3.5,heat:4.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:10,maxPipe:20,chargeRate:15,ref:"MSZ-LN35VG2V/B/R / MUZ-LN35VG",indoorDims:"299 × 798 × 219mm",outdoorDims:"550 × 800 × 285mm"},
+          {id:"ln50",name:"MSZ-LN50 — 5.0kW cool / 6.0kW heat",cool:5.0,heat:6.0,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:7.5,maxPipe:30,chargeRate:20,ref:"MSZ-LN50VG3V/B/R / MUZ-LN50VG",indoorDims:"325 × 1100 × 257mm",outdoorDims:"714 × 800 × 285mm"},
+          {id:"ln60",name:"MSZ-LN60 — 6.1kW cool / 6.8kW heat",cool:6.1,heat:6.8,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:7.5,maxPipe:30,chargeRate:25,ref:"MSZ-LN60VG3V/B/R / MUZ-LN60VG",indoorDims:"325 × 1100 × 257mm",outdoorDims:"880 × 840 × 330mm"},
+        ]
+      },
+      kw: {
+        label: "KW RapidHeat (floor console)", type: "Floor console",
+        models: [
+          {id:"kw25",name:"MFZ-KW25 — 2.5kW cool / 3.2kW heat",cool:2.5,heat:3.2,breaker:10,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:7.5,maxPipe:20,chargeRate:15,ref:"MFZ-KW25VG / MUZ-KW25VG",indoorDims:"600 × 800 × 195mm",outdoorDims:"550 × 800 × 285mm"},
+          {id:"kw35",name:"MFZ-KW35 — 3.5kW cool / 4.0kW heat",cool:3.5,heat:4.0,breaker:10,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'3/8"',preCharged:7.5,maxPipe:20,chargeRate:15,ref:"MFZ-KW35VG / MUZ-KW35VG",indoorDims:"600 × 800 × 195mm",outdoorDims:"550 × 800 × 285mm"},
+          {id:"kw42",name:"MFZ-KW42 — 4.2kW cool / 5.4kW heat",cool:4.2,heat:5.4,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:7.5,maxPipe:25,chargeRate:20,ref:"MFZ-KW42VG / MUZ-KW42VG",indoorDims:"600 × 800 × 195mm",outdoorDims:"714 × 800 × 285mm"},
+          {id:"kw50",name:"MFZ-KW50 — 5.0kW cool / 6.1kW heat",cool:5.0,heat:6.1,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'1/4"',suction:'1/2"',preCharged:7.5,maxPipe:30,chargeRate:20,ref:"MFZ-KW50VG / MUZ-KW50VG",indoorDims:"600 × 800 × 195mm",outdoorDims:"714 × 800 × 285mm"},
+          {id:"kw60",name:"MFZ-KW60 — 6.1kW cool / 7.2kW heat",cool:6.1,heat:7.2,breaker:16,cable:"2.5mm² T&E",isolator:"20A DP",liquid:'3/8"',suction:'5/8"',preCharged:7.5,maxPipe:30,chargeRate:25,ref:"MFZ-KW60VG / MUZ-KW60VG",indoorDims:"600 × 800 × 195mm",outdoorDims:"880 × 840 × 330mm"},
+        ]
+      }
+    }
+  }
+};
+
+let activeBrand = 'daikin';
+let activeSeries = 'ftxm';
+
+function selectBrand(brand) {
+  activeBrand = brand;
+  document.querySelectorAll('.brand-tab').forEach(function(t) { t.classList.remove('active'); });
+  event.target.classList.add('active');
+
+  if (brand === 'myair') {
+    document.getElementById('series-tabs').innerHTML = '';
+    document.getElementById('model-wrap').style.display = 'none';
+    document.getElementById('result').innerHTML = `
+      <div class="series-badge">My Air — Installation Settings</div>
+
+      <div class="section-title">Main menu (Middle button)</div>
+      <div class="info-row"><span class="info-icon">&#x1F550;</span><div><span class="info-label">Step 1</span>Clock &amp; calendar &#x2192; Set time &amp; date</div></div>
+
+      <div class="section-title">Configuration</div>
+      <div class="info-row"><span class="info-icon">&#x1F5A5;</span><div><span class="info-label">Display &#x2192; Display mode</span>Set to <strong>Detailed</strong></div></div>
+      <div class="info-row"><span class="info-icon">&#x1F321;</span><div><span class="info-label">Display &#x2192; Display item</span>Set to <strong>Room temp</strong></div></div>
+
+      <div class="section-title">Field settings</div>
+      <div class="info-row"><span class="info-icon">&#x2699;</span><div><span class="info-label">Access</span>Hold down <strong>service setting button (bottom right) for 5 seconds</strong></div></div>
+
+      <div class="section-title">Change field settings</div>
+      <div class="spec-grid">
+        <div class="spec-card"><div class="spec-label">20-2-03</div><div class="spec-value-sm">Read temp from controller</div></div>
+        <div class="spec-card"><div class="spec-label">22-3-03</div><div class="spec-value-sm">Heating fan cycle off</div></div>
+        <div class="spec-card" style="grid-column:span 2"><div class="spec-label">23-6-10</div><div class="spec-value-sm">Adjust static pressure up / down</div></div>
+      </div>
+
+      <div class="info-row" style="margin-top:8px"><span class="info-icon">&#x1F4BE;</span><div><span class="info-label">Save</span>Press <strong>bottom right button</strong> to save settings</div></div>
+
+      <div class="section-title">Commissioning — Zone Control Ducted</div>
+      <div class="info-row"><span class="info-icon">&#x2460;</span><div><span class="info-label">Step 1</span>Wire in Daikin wall controller</div></div>
+      <div class="info-row"><span class="info-icon">&#x2461;</span><div><span class="info-label">Step 2</span>Change field settings</div></div>
+      <div class="info-row"><span class="info-icon">&#x2462;</span><div><span class="info-label">Step 3</span>Wire in zone controller</div></div>
+      <div class="info-row"><span class="info-icon">&#x2463;</span><div><span class="info-label">Step 4</span>Make sure dip switch 5 is <strong>OFF</strong> on black box</div></div>
+
+      <div class="section-title">Touchscreen Setup</div>
+      <div class="info-row"><span class="info-icon">&#x2460;</span><div><span class="info-label">Step 1</span>Tech set up — Run wizard</div></div>
+      <div class="info-row"><span class="info-icon">&#x2461;</span><div><span class="info-label">Dealer password</span><strong>22369</strong></div></div>
+      <div class="info-row"><span class="info-icon">&#x2462;</span><div><span class="info-label">Step 3</span>Select number of zones</div></div>
+      <div class="info-row"><span class="info-icon">&#x2463;</span><div><span class="info-label">Step 4</span>Select <strong>0 constants</strong></div></div>
+      <div class="info-row"><span class="info-icon">&#x2464;</span><div><span class="info-label">Step 5</span>Set zone names &amp; pair temp sensors</div></div>
+      <div class="info-row"><span class="info-icon">&#x2465;</span><div><span class="info-label">Step 6</span>Set system to <strong>My Temp</strong></div></div>
+      <div class="info-row"><span class="info-icon">&#x2466;</span><div><span class="info-label">Step 7</span>Set to show <strong>actual temp</strong></div></div>
+
+      <div class="section-title">Commissioning Checks</div>
+      <div class="info-row"><span class="info-icon">&#x2460;</span><div><span class="info-label">Step 1</span>Run system first on <strong>fan only</strong></div></div>
+      <div class="info-row"><span class="info-icon">&#x2461;</span><div><span class="info-label">Step 2</span>Check zones are allocated correctly by turning on/off and checking airflow</div></div>
+      <div class="info-row"><span class="info-icon">&#x2462;</span><div><span class="info-label">Step 3</span>Switch to heating/cooling &amp; check temps</div></div>
+    `;
+    return;
+  }
+
+  document.getElementById('model-wrap').style.display = '';
+  activeSeries = Object.keys(DATA[brand].series)[0];
+  renderSeriesTabs();
+  renderModels();
+  clearResult();
+}
+
+function selectSeries(s) {
+  activeSeries = s;
+  document.querySelectorAll('.series-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('stab-' + s).classList.add('active');
+  renderModels();
+  clearResult();
+}
+
+function renderSeriesTabs() {
+  if (activeBrand === 'myair') return;
+  var container = document.getElementById('series-tabs');
+  var series = DATA[activeBrand].series;
+  var html = '';
+  Object.keys(series).forEach(function(key) {
+    var s = series[key];
+    var active = key === activeSeries ? ' active' : '';
+    var label = s.label.split(' -- ')[0].split(' — ')[0];
+    html += '<button class="series-tab' + active + '" id="stab-' + key + '" onclick="selectSeries(\'' + key + '\')">' + label + '</button>';
+  });
+  container.innerHTML = html;
+}
+
+function renderModels() {
+  if (activeBrand === 'myair') return;
+  var models = DATA[activeBrand].series[activeSeries].models;
+  var sel = document.getElementById('model-sel');
+  var html = '<option value="">Select model&hellip;</option>';
+  models.forEach(function(m) {
+    html += '<option value="' + m.id + '">' + m.name + '</option>';
+  });
+  sel.innerHTML = html;
+}
+
+function clearResult() {
+  document.getElementById('result').innerHTML = '<div class="no-sel">&#9757; Select a model above</div>';
+}
+
+function onModel() {
+  var mid = document.getElementById('model-sel').value;
+  if (!mid) { clearResult(); return; }
+  if (activeBrand === 'myair') return;
+  var seriesData = DATA[activeBrand].series[activeSeries];
+  var m = null;
+  seriesData.models.forEach(function(x) { if (x.id === mid) m = x; });
+  if (!m) return;
+
+  var isFloor = seriesData.type === 'Floor console';
+  var isDucted = seriesData.type === 'Ceiling ducted';
+  var isAccessory = seriesData.type === 'Accessory';
+  var isOverseas = !!seriesData.overseas;
+  var isThreePhase = !!m.threephase;
+
+  var supply = isThreePhase ? '380-415V / 50Hz / 3ph' : '230V / 50Hz / 1ph';
+
+  var html = '';
+  html += '<div class="series-badge">' + seriesData.label + '</div>';
+  html += '<p class="model-note">' + m.ref + '</p>';
+
+  if (isAccessory && m.wifi) {
+    html += '<div class="section-title">Compatible models</div>';
+    html += '<div class="info-row"><span class="info-icon">&#10003;</span><div><span class="info-label">Suits</span>' + m.compatible + '</div></div>';
+    html += '<div class="section-title">Notes</div>';
+    html += '<div class="warn warn-blue"><span class="warn-icon">&#8505;</span><span>' + m.notes + '</span></div>';
+    document.getElementById('result').innerHTML = html;
+    return;
+  }
+
+  html += '<div class="section-title">Electrical requirements</div>';
+  html += '<div class="spec-grid">';
+  html += '<div class="spec-card"><div class="spec-label">Cable size</div><div class="spec-value-sm">' + m.cable + '</div></div>';
+  html += '<div class="spec-card"><div class="spec-label">Circuit breaker</div><div class="spec-value">' + m.breaker + '<span class="spec-unit">A</span></div></div>';
+  html += '<div class="spec-card"><div class="spec-label">Isolator</div><div class="spec-value-sm">' + m.isolator + '</div></div>';
+  html += '<div class="spec-card"><div class="spec-label">Supply</div><div class="spec-value-sm">' + supply + '</div></div>';
+  html += '</div>';
+
+  html += '<div class="section-title">Capacity</div>';
+  html += '<div class="spec-grid">';
+  html += '<div class="spec-card"><div class="spec-label">Cooling</div><div class="spec-value">' + m.cool + '<span class="spec-unit">kW</span></div></div>';
+  html += '<div class="spec-card"><div class="spec-label">Heating</div><div class="spec-value">' + m.heat + '<span class="spec-unit">kW</span></div></div>';
+  html += '</div>';
+
+  html += '<div class="section-title">Pipework</div>';
+  html += '<div class="info-row"><span class="info-icon">&#9679;</span><div><span class="info-label">Liquid line</span>' + m.liquid + '</div></div>';
+  html += '<div class="info-row"><span class="info-icon">&#9679;</span><div><span class="info-label">Suction line</span>' + m.suction + '</div></div>';
+  if (!isFloor && !isDucted) {
+    html += '<div class="info-row"><span class="info-icon">&#9638;</span><div><span class="info-label">Wall penetration</span>65mm core hole</div></div>';
+  }
+  html += '<div class="info-row"><span class="info-icon">&#10052;</span><div><span class="info-label">Refrigerant</span>R32</div></div>';
+
+  html += '<div class="section-title">Refrigerant pipe run</div>';
+  html += '<div class="spec-grid-3">';
+  html += '<div class="spec-card"><div class="spec-label">Pre-charged length</div><div class="spec-value">' + m.preCharged + '<span class="spec-unit">m</span></div></div>';
+  html += '<div class="spec-card"><div class="spec-label">Maximum pipe run</div><div class="spec-value">' + m.maxPipe + '<span class="spec-unit">m</span></div></div>';
+  html += '<div class="spec-card"><div class="spec-label">Additional charge</div><div class="spec-value-sm">' + m.chargeRate + 'g<span class="spec-unit">/m</span><div style="font-size:11px;color:#888780;margin-top:3px">beyond ' + m.preCharged + 'm</div></div></div>';
+  html += '</div>';
+
+  if (m.indoorDims && m.outdoorDims) {
+    html += '<div class="section-title">Unit dimensions (H x W x D)</div>';
+    html += '<div class="spec-grid">';
+    html += '<div class="spec-card"><div class="spec-label">Indoor unit</div><div class="spec-value-sm">' + m.indoorDims + '</div></div>';
+    html += '<div class="spec-card"><div class="spec-label">Outdoor unit</div><div class="spec-value-sm">' + m.outdoorDims + '</div></div>';
+    html += '</div>';
+  }
+
+  if (!isFloor && !isDucted) {
+    html += '<div class="warn warn-blue"><span class="warn-icon">&#8505;</span><span><strong>Indoor mounting height:</strong> Install so the top of the indoor unit is no lower than 2250mm. If possible mount indoor unit no less than 100mm from ceiling. Install indoor unit parallel with ceiling. If the indoor unit is being installed on a higher wall, mount as low as practicable.</span></div>';
+  }
+  if (!isDucted) {
+    html += '<div class="warn warn-blue"><span class="warn-icon">&#8505;</span><span><strong>Pipe exit:</strong> Where pipes exit the building to the outdoor unit, bring them through the wall a minimum of 500mm up from the slab. Where possible, bring the pipes out behind the outdoor unit.</span></div>';
+  }
+  if (isDucted) {
+    html += '<div class="warn warn-blue"><span class="warn-icon">&#8505;</span><span><strong>Wall controller:</strong> Mount centre of controller at 1500mm from finished floor level.</span></div>';
+  }
+  if (isOverseas) {
+    html += '<div class="warn warn-amber"><span class="warn-icon">&#9888;</span><span>Ambi QCE is newly released in NZ. Specs based on international data &mdash; always verify against the supplied NZ installation manual.</span></div>';
+  }
+  if (isThreePhase) {
+    html += '<div class="warn warn-amber"><span class="warn-icon">&#9888;</span><span><strong>3 Phase supply required:</strong> This unit requires 3 phase 380-415V / 50Hz power supply. Confirm 3 phase is available before installation.</span></div>';
+  }
+
+  document.getElementById('result').innerHTML = html;
+}
+
+// Init
+renderSeriesTabs();
+renderModels();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').then(function(reg) {
+      console.log('SW registered');
+    }).catch(function(err) {
+      console.log('SW failed: ', err);
+    });
+  });
+}
+</script>
+</body>
+</html>
